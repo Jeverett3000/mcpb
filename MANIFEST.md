@@ -1,8 +1,8 @@
-To install it on your Mac:
-You need Docker Desktop installed on your Mac. Then:
-  1. Download the .mcpb file (you have the link)
-  2. Open the .mcpb file — Claude Desktop should launch if installed
-  3. Review and adjust the settings (Port, Bearer Token)
-  4. Turn on the WebSSH Extension in Claude Desktop
-  5. The first time, wait a minute for Docker to pull the container image 
-Once running, you can access the MCP endpoints at http://localhost:1985/mcp, and authentication is handled via a Bearer Token found in the API/MCP settings panel within WebSSH.
+Step 1: Install the WebSSH MCPB Extension into Claude Desktop
+Download the .mcpb file from the link you shared (if you haven’t already saved it locally), then simply double-click it. Claude Desktop should automatically detect it and display an installation dialog. Review the configuration settings — pay particular attention to the Port (default is 1985) and the Bearer Token field, which you’ll need to retrieve from WebSSH itself.
+
+Step 2: Get Your Bearer Token from WebSSH
+Open WebSSH on your Mac and navigate to Settings → API / MCP Server. Toggle the server ON, then copy the Bearer Token shown there. Paste that token into the Claude Desktop extension configuration dialog before confirming installation.
+
+Step 3: Allow Docker to Initialize
+The first time the extension runs, Docker Desktop will pull the container image it needs. This can take a minute or two. You’ll know it’s ready when the extension shows as active in Claude Desktop under Settings → Extensions.
