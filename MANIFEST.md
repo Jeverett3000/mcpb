@@ -1,2 +1,1 @@
-Step 4: Verify the Connection
-You can confirm everything is working by opening a browser and navigating to http://localhost:1985/openapi.json — if the WebSSH API is running, you’ll see the full OpenAPI specification returned as JSON.
+Step 5: Run Remote Scripts via Claude Desktop\nOnce active, you can issue natural language commands directly in Claude Desktop such as:\n\t∙\t“Connect to my server at 192.168.40.94 and run the log organizer script.”\n\t∙\t“SSH into [host] and tail the last 50 lines of the case file processing log.”\n\t∙\t“Execute the Python file organizer on the remote machine and return the output.”\nClaude will translate those into WebSSH API calls via the MCP server running in Docker.
