@@ -19,23 +19,38 @@ export function replaceVariables(
   value: unknown,
   variables: Record<string, string | string[]>,
 ): unknown {
+  // Pre-compile regex patterns once so they are not re-created on every string
+  const compiledPatterns = new Map(
+    Object.keys(variables).map((key) => [
+      key,
+      new RegExp(`\\$\\{${key}\\}`, "g"),
+    ]),
+  );
+  return replaceVariablesInternal(value, variables, compiledPatterns);
+}
+
+function replaceVariablesInternal(
+  value: unknown,
+  variables: Record<string, string | string[]>,
+  compiledPatterns: Map<string, RegExp>,
+): unknown {
   if (typeof value === "string") {
     let result = value;
 
     // Replace all variables in the string
     for (const [key, replacement] of Object.entries(variables)) {
-      const pattern = new RegExp(`\\$\\{${key}\\}`, "g");
-
-      // Check if this pattern actually exists in the string
-      if (result.match(pattern)) {
-        if (Array.isArray(replacement)) {
+      if (Array.isArray(replacement)) {
+        // Warn only when the pattern actually appears in the string
+        if (result.includes(`\${${key}}`)) {
           console.warn(
             `Cannot replace ${key} with array value in string context: "${value}"`,
             { key, replacement },
           );
-        } else {
-          result = result.replace(pattern, replacement);
         }
+      } else {
+        // Replace all occurrences in a single pass; returns the string unchanged
+        // if the pattern is not present, so no separate existence check is needed.
+        result = result.replace(compiledPatterns.get(key)!, replacement);
       }
     }
 
@@ -65,7 +80,7 @@ export function replaceVariables(
         }
       } else {
         // Recursively process non-variable items
-        result.push(replaceVariables(item, variables));
+        result.push(replaceVariablesInternal(item, variables, compiledPatterns));
       }
     }
 
@@ -73,7 +88,7 @@ export function replaceVariables(
   } else if (value && typeof value === "object") {
     const result: Record<string, unknown> = {};
     for (const [key, val] of Object.entries(value)) {
-      result[key] = replaceVariables(val, variables);
+      result[key] = replaceVariablesInternal(val, variables, compiledPatterns);
     }
 
     return result;

@@ -82,9 +82,17 @@ export function getAllFiles(
   fileList: Record<string, Uint8Array> = {},
   additionalPatterns: string[] = [],
 ): Record<string, Uint8Array> {
-  const files = readdirSync(dirPath);
-
   const ignoreChecker = buildIgnoreChecker(additionalPatterns);
+  return collectFiles(dirPath, baseDir, fileList, ignoreChecker);
+}
+
+function collectFiles(
+  dirPath: string,
+  baseDir: string,
+  fileList: Record<string, Uint8Array>,
+  ignoreChecker: ReturnType<typeof buildIgnoreChecker>,
+): Record<string, Uint8Array> {
+  const files = readdirSync(dirPath);
 
   for (const file of files) {
     const filePath = join(dirPath, file);
@@ -97,7 +105,7 @@ export function getAllFiles(
     const stat = statSync(filePath);
 
     if (stat.isDirectory()) {
-      getAllFiles(filePath, baseDir, fileList, additionalPatterns);
+      collectFiles(filePath, baseDir, fileList, ignoreChecker);
     } else {
       // Use forward slashes in zip file paths
       const zipPath = relativePath.split(sep).join("/");
@@ -124,9 +132,24 @@ export function getAllFilesWithCount(
   additionalPatterns: string[] = [],
   ignoredCount = 0,
 ): GetAllFilesResult {
-  const files = readdirSync(dirPath);
-
   const ignoreChecker = buildIgnoreChecker(additionalPatterns);
+  return collectFilesWithCount(
+    dirPath,
+    baseDir,
+    fileList,
+    ignoreChecker,
+    ignoredCount,
+  );
+}
+
+function collectFilesWithCount(
+  dirPath: string,
+  baseDir: string,
+  fileList: Record<string, FileWithPermissions>,
+  ignoreChecker: ReturnType<typeof buildIgnoreChecker>,
+  ignoredCount: number,
+): GetAllFilesResult {
+  const files = readdirSync(dirPath);
 
   for (const file of files) {
     const filePath = join(dirPath, file);
@@ -140,11 +163,11 @@ export function getAllFilesWithCount(
     const stat = statSync(filePath);
 
     if (stat.isDirectory()) {
-      const result = getAllFilesWithCount(
+      const result = collectFilesWithCount(
         filePath,
         baseDir,
         fileList,
-        additionalPatterns,
+        ignoreChecker,
         ignoredCount,
       );
       ignoredCount = result.ignoredCount;
