@@ -1,0 +1,85 @@
+{
+  "$schema": "../../dist/mcpb-manifest.schema.json",
+  "manifest_version": "0.3",
+  "name": "copilot-node",
+  "display_name": "AI Coding Copilot",
+  "version": "1.0.0",
+  "description": "AI-powered coding assistant that reviews, explains, generates, and fixes code using Claude.",
+  "long_description": "AI Coding Copilot brings the power of Claude directly into your workflow as an MCP server. It provides four core tools: review code for bugs and best practices, explain complex code in plain English, generate new code from a description, and fix issues in existing code. All powered by Claude with adaptive reasoning for accurate, production-ready results.",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com",
+    "url": "https://www.anthropic.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/mcpb"
+  },
+  "homepage": "https://www.anthropic.com",
+  "documentation": "https://github.com/anthropics/mcpb/tree/main/examples/copilot-node",
+  "support": "https://github.com/anthropics/mcpb/issues",
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "ANTHROPIC_API_KEY": "${user_config.api_key}",
+        "COPILOT_MODEL": "${user_config.model}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "review_code",
+      "description": "Review code for bugs, security vulnerabilities, performance issues, and best practices"
+    },
+    {
+      "name": "explain_code",
+      "description": "Explain what a piece of code does in plain English at varying levels of detail"
+    },
+    {
+      "name": "generate_code",
+      "description": "Generate clean, production-ready code from a natural language description"
+    },
+    {
+      "name": "fix_code",
+      "description": "Diagnose and fix bugs or issues in existing code"
+    }
+  ],
+  "keywords": [
+    "ai",
+    "copilot",
+    "coding",
+    "assistant",
+    "claude",
+    "code-review",
+    "code-generation"
+  ],
+  "license": "MIT",
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "Anthropic API Key",
+      "description": "Your Anthropic API key from https://console.anthropic.com",
+      "sensitive": true,
+      "required": true
+    },
+    "model": {
+      "type": "string",
+      "title": "Claude Model",
+      "description": "The Claude model to use for code assistance",
+      "default": "claude-opus-4-6",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "privacy_policies": []
+}
